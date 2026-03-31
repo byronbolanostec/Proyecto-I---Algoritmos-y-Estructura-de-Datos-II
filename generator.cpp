@@ -16,9 +16,9 @@ int main(int argc, char* argv[]) {
     const uint64_t MB = 1024ULL * KB;
     const uint64_t GB = 1024ULL * MB;
 
-    if (size == "SMALL") bytes = 512ULL * MB;
-    else if (size == "MEDIUM") bytes = 1ULL * GB;
-    else if (size == "LARGE") bytes = 2ULL * GB;
+    if (size == "SMALL") bytes = (512ULL * MB) / 2;
+    else if (size == "MEDIUM") bytes = (1ULL * GB) / 2;
+    else if (size == "LARGE") bytes = (2ULL * GB) / 2;
     else {
         cerr << "Tamano invalido\n";
         return 1;
