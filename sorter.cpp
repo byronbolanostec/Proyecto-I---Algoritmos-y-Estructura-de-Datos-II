@@ -6,7 +6,11 @@
 
 using namespace std;
 
+
+
+//Función de arreglo paginado.
 class PagedArray {
+    //slot de ram (info)
     struct Page {
         int32_t* data;
         long long page;
@@ -34,6 +38,7 @@ class PagedArray {
         return rem >= pageSize ? pageSize : (int)rem;
     }
 
+    //Remplazo de LRU, el slot victima es el que esta al final de la lista (tail).
     void detach(int s) {
         int p = prev[s], nx = next[s];
         if (p != -1) next[p] = nx; else head = nx;
@@ -185,6 +190,9 @@ public:
     long long getFaults() const { return faults; }
 };
 
+
+
+//Funcion para copiar el archivo inicial al de salida.
 bool copyFile(const string& a, const string& b) {
     FILE* in = fopen(a.c_str(), "rb");
     if (!in) {
@@ -210,7 +218,11 @@ bool copyFile(const string& a, const string& b) {
     return true;
 }
 
-//////////////////////// SORTS ////////////////////////
+
+
+///////////////////////////////// SORTS (Algoritmos usados para ordenar el arreglo paginado)
+
+
 
 void insertion(PagedArray& a, long long l, long long r) {
     for (long long i = l + 1; i <= r; i++) {
@@ -224,6 +236,7 @@ void insertion(PagedArray& a, long long l, long long r) {
     }
 }
 
+//////////////////////// quick
 void quick(PagedArray& a, long long l, long long r) {
     while (l < r) {
         if (r - l < 64) {
@@ -249,11 +262,11 @@ void quick(PagedArray& a, long long l, long long r) {
         }
     }
 }
-
 void quickSort(PagedArray& a) {
     if (a.size() > 1) quick(a, 0, a.size() - 1);
 }
 
+//////////////////////// merge
 void mergeRange(PagedArray& a, long long l, long long m, long long r) {
     long long n1 = m - l + 1;
     long long n2 = r - m;
@@ -274,7 +287,6 @@ void mergeRange(PagedArray& a, long long l, long long m, long long r) {
     delete[] L;
     delete[] R;
 }
-
 void mergeSort(PagedArray& a, long long l, long long r) {
     if (l >= r) return;
     long long m = (l + r) / 2;
@@ -282,11 +294,11 @@ void mergeSort(PagedArray& a, long long l, long long r) {
     mergeSort(a, m + 1, r);
     mergeRange(a, l, m, r);
 }
-
 void mergeSort(PagedArray& a) {
     if (a.size() > 1) mergeSort(a, 0, a.size() - 1);
 }
 
+//////////////////////// tim
 void timSort(PagedArray& a) {
     long long n = a.size();
     long long RUN = 32;
@@ -308,6 +320,7 @@ void timSort(PagedArray& a) {
     }
 }
 
+//////////////////////// radix
 void radixSort(PagedArray& a) {
     long long n = a.size();
     int32_t* t = new int32_t[n];
@@ -333,6 +346,7 @@ void radixSort(PagedArray& a) {
     delete[] t;
 }
 
+//////////////////////// heap
 void heapify(PagedArray& a, long long n, long long i) {
     while (true) {
         long long l = 2 * i + 1, r = 2 * i + 2, largest = i;
@@ -343,7 +357,6 @@ void heapify(PagedArray& a, long long n, long long i) {
         i = largest;
     }
 }
-
 void heapSort(PagedArray& a) {
     long long n = a.size();
 
@@ -358,7 +371,11 @@ void heapSort(PagedArray& a) {
     }
 }
 
-//////////////////////// MAIN ////////////////////////
+
+
+///////////////////////////////// MAIN
+
+
 
 int main(int argc, char* argv[]) {
     if (argc != 11) {
